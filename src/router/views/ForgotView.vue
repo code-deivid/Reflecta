@@ -1,37 +1,31 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 
 const email = ref<string>('')
-const password = ref<string>('')
-
-const puedeEnviar = computed(() => {
-  return email.value.trim().length > 0 && password.value.trim().length > 0
-})
 </script>
 
 <template>
   <main>
     <div class="subtitle">
-      <h1>Reflecta</h1>
-      <p>Un espacio para tus notas y reflexiones</p>
+      <h1>Restablecer contraseña</h1>
+      <p>
+        Introduce tu correo electrónico y te enviaremos un enlace para crear una nueva contraseña.
+      </p>
     </div>
 
-    <form @submit.prevent="() => {}">
+    <form @submit.prevent="() => {}" class="flex flex-col gap-3 items-left">
       <label>
-        <p>Correo electrónico</p>
-        <input v-model="email" placeholder="email@example.com" type="text" />
+        Email de recuperación
+        <input type="email" v-model="email" placeholder="email@example.com" />
       </label>
-      <label>
-        <p>Contraseña</p>
-        <input v-model="password" placeholder="contraseña" type="password" />
-      </label>
-      <button type="submit" :disabled="!puedeEnviar">Iniciar sesión</button>
-      <a href="">¿Olvidaste la contraseña?</a>
+
+      <button type="submit" :disabled="!(email.trim().length > 0)">Enviar</button>
     </form>
+
     <div class="prefooter">
-      <p>No tienes cuenta?</p>
-      <router-link to="/register">Registrarse</router-link>
+      <p>¿Ya tienes cuenta?</p>
+      <router-link to="/">Inicia sesión</router-link>
     </div>
 
     <footer>
@@ -119,7 +113,10 @@ main {
   }
 
   .subtitle {
+    justify-content: center;
+    width: 100%;
     gap: 20px;
+    max-width: 500px;
     align-items: center;
     display: flex;
     flex-direction: column;
@@ -157,9 +154,11 @@ main {
       width: 100%;
       max-width: 500px;
       padding: 24px;
-      a {
-        justify-content: center;
-      }
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      width: 100%;
     }
   }
 }

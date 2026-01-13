@@ -169,6 +169,7 @@ main {
   }
 
   .subtitle {
+    gap: 20px;
     align-items: center;
     display: flex;
     flex-direction: column;
@@ -180,8 +181,8 @@ main {
     width: 100%;
     display: flex;
     justify-content: center;
-    gap: 10px;
     color: var(--label-text-color);
+    gap: 10px;
     a {
       color: var(--button);
       text-decoration: none;
@@ -194,6 +195,19 @@ main {
     position: absolute;
     bottom: 20px;
     color: var(--label-text-color);
+  }
+}
+@media screen and (width < 738px) {
+  main {
+    padding: 16px;
+    gap: 24px;
+    height: 100dvh;
+
+    form {
+      width: 100%;
+      max-width: 500px; /* o 100% si quieres ocupar todo */
+      padding: 24px;
+    }
   }
 }
 </style>
