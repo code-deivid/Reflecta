@@ -24,7 +24,7 @@ export const register = async (email: string, password: string): Promise<IAuthRe
 
         const user = userCredential.user
 
-        await sendEmailVerification(user, { url: `${window.location.origin}/perfil` })
+        await sendEmailVerification(user, { url: `${window.location.origin}/` })
 
         await signOut(auth) //Cerrar sesión hasta que verifique el email
 
