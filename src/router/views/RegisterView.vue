@@ -22,12 +22,21 @@ const puedeEnviar = computed(() => {
 const registrarUsuario = async (): Promise<IAuthResponse> => {
   try {
     if (!coinciden.value) {
-      return { ok: false, mensaje: 'Las contraseñas no coinciden', usuario: null }
+      return {
+        ok: false,
+        mensaje: 'Las contraseñas no coinciden',
+        usuario: null,
+      }
     }
 
     return await register(email.value, password.value)
+    
   } catch (error) {
-    return { ok: false, mensaje: 'No se ha podido registrar', usuario: null }
+    return {
+      ok: false,
+      mensaje: 'No se ha podido registrar',
+      usuario: null,
+    }
   } finally {
     email.value = ''
     password.value = ''

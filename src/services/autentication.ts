@@ -4,7 +4,7 @@ import {
     createUserWithEmailAndPassword,
     // onAuthStateChanged,
     sendEmailVerification, // Escuchar cambios de autenticación
-    // signInWithEmailAndPassword,
+    signInWithEmailAndPassword,
     signOut,
     type User
 } from 'firebase/auth'
@@ -21,12 +21,10 @@ export const register = async (email: string, password: string): Promise<IAuthRe
     try {
 
         const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-
         const user = userCredential.user
 
         await sendEmailVerification(user, { url: `${window.location.origin}/` })
-
-        await signOut(auth) //Cerrar sesión hasta que verifique el email
+        await signOut(auth)
 
         return {
             ok: true,
@@ -42,4 +40,26 @@ export const register = async (email: string, password: string): Promise<IAuthRe
             usuario: null,
         }
     }
+}
+
+export const login = async (email: string, password: string): Promise<IAuthResponse> => {
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password)
+        const user = userCredential.user
+
+        return {
+            ok: true,
+            mensaje: 'Usuario logeado con exito',
+            usuario: user,
+        }
+
+    } catch (error) {
+        return {
+            ok: false,
+            mensaje: 'Error iniciar sesión',
+            usuario: null,
+        }
+
+    }
+
 }

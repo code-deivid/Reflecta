@@ -53,7 +53,7 @@ main {
 
     button {
       color: white;
-      padding: 10px;
+      padding: 12px;
       border: none;
       border-radius: 10px;
       background-color: var(--button);
@@ -73,7 +73,6 @@ main {
       color: var(--button);
       text-decoration: none;
       display: flex;
-      flex-direction: row-reverse;
       font-weight: bold;
     }
   }
@@ -83,7 +82,7 @@ main {
     display: flex;
     flex-direction: column;
     width: 100%;
-    gap: 10px;
+    gap: 13px;
     font-size: 0.7rem;
     text-transform: uppercase;
     font-weight: 600;

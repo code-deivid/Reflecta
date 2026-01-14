@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { login } from '@/services/autentication'
 import FormLayout from '@/components/FormLayout.vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const email = ref<string>('')
 const password = ref<string>('')
@@ -8,6 +12,15 @@ const password = ref<string>('')
 const puedeEnviar = computed(() => {
   return email.value.trim().length > 0 && password.value.trim().length > 0
 })
+
+const iniciar_sesion = async () => {
+  const resultado = await login(email.value, password.value)
+
+  if (resultado.ok) {
+    console.log(`Usuario logeado ${resultado.usuario?.email}`)
+    router.push('/home')
+  }
+}
 </script>
 
 <template>
@@ -18,7 +31,7 @@ const puedeEnviar = computed(() => {
     </template>
 
     <template #form>
-      <form @submit.prevent="() => {}">
+      <form @submit.prevent="iniciar_sesion">
         <label>
           <p>Correo electrónico</p>
           <input v-model="email" placeholder="email@example.com" type="text" />
