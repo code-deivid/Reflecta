@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { getAuth } from 'firebase/auth'
+import { getAuth, onAuthStateChanged, type User } from 'firebase/auth'
 
 import RegisterView from './views/RegisterView.vue'
 import LoginView from './views/LoginView.vue'
@@ -9,25 +9,51 @@ import HomeView from './views/HomeView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', component: LoginView },
-    { path: '/register', component: RegisterView },
-    { path: '/recovery', component: ForgotView },
+    {
+      path: '/',
+      component: LoginView
+    },
+    {
+      path: '/register',
+      component: RegisterView
+    },
+    {
+      path: '/recovery',
+      component: ForgotView
+    },
     {
       path: '/home',
-      component: HomeView,
-      meta: { requiresAuth: true }
-    }
-  ]
+      component: HomeView, meta: { requiresAuth: true }
+    },
+  ],
 })
 
-router.beforeEach((to, from, next) => {
-  const auth = getAuth()
+//Para que aunque hagas F5 no cierre la sesión
+const auth = getAuth()
+let authReady = false
+let cachedUser: User | null = null
 
-  if (to.meta.requiresAuth && !auth.currentUser) {
-    next('/')
-  } else {
-    next()
+const waitAuthReady = () =>
+  new Promise<User | null>((resolve) => {
+    if (authReady) return resolve(cachedUser)
+
+    const unsub = onAuthStateChanged(auth, (user) => {
+      cachedUser = user
+      authReady = true
+      unsub()
+      resolve(user)
+    })
+  })
+
+//Solo deja pasar si el usuario está autenticado
+router.beforeEach(async (to, from, next) => {
+  const user = await waitAuthReady()
+
+  if (to.meta.requiresAuth && !user) {
+    return next('/')
   }
+
+  next()
 })
 
 export default router

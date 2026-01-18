@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { register } from '@/services/autentication'
-import type { IAuthResponse } from '@/services/autentication'
+import { ref, computed, useTemplateRef } from 'vue'
+import { registrar } from '@/services/autentication'
+import type { IAuthResponse } from '@/models/authResponse'
 import FormLayout from '@/components/FormLayout.vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const form = useTemplateRef('FORM_ELEMENT')
 
 const email = ref<string>('')
 const password = ref<string>('')
@@ -19,7 +24,7 @@ const puedeEnviar = computed(() => {
   )
 })
 
-const registrarUsuario = async (): Promise<IAuthResponse> => {
+const register = async (): Promise<IAuthResponse> => {
   try {
     if (!coinciden.value) {
       return {
@@ -29,18 +34,22 @@ const registrarUsuario = async (): Promise<IAuthResponse> => {
       }
     }
 
-    return await register(email.value, password.value)
-    
+    const user = await registrar(email.value, password.value)
+    form.value?.reset()
+    await router.push('/home')
+
+    return {
+      ok: true,
+      mensaje: 'Se ha registrado correctamente',
+      usuario: user.usuario,
+    }
   } catch (error) {
+    form.value?.reset()
     return {
       ok: false,
-      mensaje: 'No se ha podido registrar',
+      mensaje: 'Ha habido un error al crear un usuario',
       usuario: null,
     }
-  } finally {
-    email.value = ''
-    password.value = ''
-    confirmPassword.value = ''
   }
 }
 </script>
@@ -53,7 +62,7 @@ const registrarUsuario = async (): Promise<IAuthResponse> => {
     </template>
 
     <template #form>
-      <form @submit.prevent="registrarUsuario" class="flex flex-col gap-3 items-left">
+      <form ref="FORM_ELEMENT" @submit.prevent="register" class="flex flex-col gap-3 items-left">
         <label>
           Email
           <input type="email" v-model="email" placeholder="email@example.com" />

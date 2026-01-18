@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import type { IAuthResponse } from '@/models/authResponse'
 import { login } from '@/services/autentication'
+
 import FormLayout from '@/components/FormLayout.vue'
 import { useRouter } from 'vue-router'
+import { computed, ref, useTemplateRef } from 'vue'
 
 const router = useRouter()
+
+const form = useTemplateRef('FORM_ELEMENT')
 
 const email = ref<string>('')
 const password = ref<string>('')
@@ -13,12 +17,24 @@ const puedeEnviar = computed(() => {
   return email.value.trim().length > 0 && password.value.trim().length > 0
 })
 
-const iniciar_sesion = async () => {
-  const resultado = await login(email.value, password.value)
+const iniciarSesion = async (): Promise<IAuthResponse> => {
+  try {
+    const perfil = await login(email.value, password.value)
+    form.value?.reset()   
+    await router.push('/home')
 
-  if (resultado.ok) {
-    console.log(`Usuario logeado ${resultado.usuario?.email}`)
-    router.push('/home')
+    return {
+      ok: true,
+      mensaje: 'Has iniciado sesión enhorabuena',
+      usuario: perfil.usuario,
+    }
+  } catch (error) {
+    form.value?.reset()
+    return {
+      ok: false,
+      mensaje: `No se ha podido inicar sesión, ${error}`,
+      usuario: null,
+    }
   }
 }
 </script>
@@ -31,7 +47,7 @@ const iniciar_sesion = async () => {
     </template>
 
     <template #form>
-      <form @submit.prevent="iniciar_sesion">
+      <form ref="FORM_ELEMENT" @submit.prevent="iniciarSesion">
         <label>
           <p>Correo electrónico</p>
           <input v-model="email" placeholder="email@example.com" type="text" />

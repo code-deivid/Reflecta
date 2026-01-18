@@ -10,18 +10,18 @@ const tieneFooter = !!slots.footer //convierte booleano si existe
 <template>
   <main>
     <div class="subtitle">
-      <slot name="subtitle" />
+      <slot name="subtitle"></slot>
     </div>
 
-    <slot name="form" />
+    <slot name="form"></slot>
 
     <div v-if="tienePrefooter" class="prefooter">
-      <slot name="prefooter" />
+      <slot name="prefooter"></slot>
     </div>
 
     <footer>
       <div>
-        <slot v-if="tieneFooter" name="footer" />
+        <slot v-if="tieneFooter" name="footer"></slot>
         <span v-else>Secured by Firebase</span>
       </div>
     </footer>
