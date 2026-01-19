@@ -20,8 +20,8 @@ onAuthStateChanged(auth, (user) => {
 })
 
 // Helpers
-export const getUsuarioActual = (): User | null => usuarioActual.value
-export const isAutenticado = (): boolean => usuarioActual.value !== null
+// export const getUsuarioActual = (): User | null => usuarioActual.value
+// export const isAutenticado = (): boolean => usuarioActual.value !== null
 
 
 export const registrar = async (email: string, password: string): Promise<IAuthResponse> => {

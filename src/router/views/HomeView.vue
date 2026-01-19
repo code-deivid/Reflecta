@@ -1,29 +1,36 @@
 <script setup lang="ts">
-import { logout } from '@/services/autentication'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { getUsuarioActual } from '@/services/autentication'
+import { logout, usuarioActual } from '@/services/autentication'
 
 const router = useRouter()
 
-const cerrarSesion = async () => {
-  try {
-    await logout()
-    router.push('/')
+// Si quieres acceder fácil al email, etc.
+const user = computed(() => usuarioActual.value)
 
-    return {
-      ok: true,
-    }
-  } catch (error) {
-    alert('se ha producido un error al cerrar sesión')
+const cerrarSesion = async () => {
+  const res = await logout()
+
+  if (!res.ok) {
+    alert('Se ha producido un error al cerrar sesión')
+    return
   }
+
+  router.push('/')
 }
 </script>
 
 <template>
-  <div>
-    <h1>Hola</h1>
-    <h2>{{ getUsuarioActual()?.email }}</h2>
+  <div v-if="user">
+    <h1>Hola 👋</h1>
+    <h2>{{ user.email }}</h2>
+
     <button @click="cerrarSesion">Cerrar sesión</button>
+  </div>
+
+  <div v-else>
+    <p>No hay sesión activa</p>
+    <button @click="$router.push('/login')">Ir a login</button>
   </div>
 </template>
 
