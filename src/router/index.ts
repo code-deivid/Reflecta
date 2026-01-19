@@ -1,47 +1,52 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { usuarioActual } from '@/services/autentication'
-
-
+import { usuarioActual, authCargado } from '@/services/autentication'
 
 import RegisterView from './views/RegisterView.vue'
 import LoginView from './views/LoginView.vue'
 import ForgotView from './views/ForgotView.vue'
 import HomeView from './views/HomeView.vue'
 
-const user = usuarioActual
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      component: LoginView
+      redirect: '/login',
+    },
+    {
+      path: '/login',
+      component: LoginView,
     },
     {
       path: '/register',
-      component: RegisterView
+      component: RegisterView,
     },
     {
       path: '/recovery',
-      component: ForgotView
+      component: ForgotView,
     },
     {
       path: '/home',
-      component: HomeView, meta: { requiresAuth: true }
+      component: HomeView,
+      meta: { requiresAuth: true },
     },
   ],
 })
 
-
-//Solo deja pasar si el usuario está autenticado
-router.beforeEach(async (to, from, next) => {
-  
-
-  if (to.meta.requiresAuth && !user) {
-    return next('/')
+const esperarAuth = async () => {
+  while (!authCargado.value) {
+    await new Promise((r) => setTimeout(r, 10))
   }
+}
 
-  next()
+router.beforeEach(async (to) => {
+  await esperarAuth()
+
+  if (to.meta.requiresAuth && !usuarioActual.value) {
+    return '/login'
+  }
 })
+
+
 
 export default router

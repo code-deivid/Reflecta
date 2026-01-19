@@ -14,14 +14,12 @@ import {
 } from 'firebase/auth'
 
 export const usuarioActual = ref<User | null>(null)
+export const authCargado = ref<boolean>(false)
 
 onAuthStateChanged(auth, (user) => {
     usuarioActual.value = user
+    authCargado.value = true
 })
-
-// Helpers
-// export const getUsuarioActual = (): User | null => usuarioActual.value
-// export const isAutenticado = (): boolean => usuarioActual.value !== null
 
 
 export const registrar = async (email: string, password: string): Promise<IAuthResponse> => {

@@ -4,8 +4,6 @@ import { useRouter } from 'vue-router'
 import { logout, usuarioActual } from '@/services/autentication'
 
 const router = useRouter()
-
-// Si quieres acceder fácil al email, etc.
 const user = computed(() => usuarioActual.value)
 
 const cerrarSesion = async () => {
